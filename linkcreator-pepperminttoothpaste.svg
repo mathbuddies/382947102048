@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100vw; height: 100vh; margin: 0; padding: 0; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); font-family: system-ui, -apple-system, sans-serif; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden;">
+      
+      <style>
+        * { box-sizing: border-box; user-select: none; }
+        .game-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 90%;
+          max-width: 900px;
+          padding: 50px;
+          background: rgba(30, 41, 59, 0.7);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 24px;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+          font-size: 3rem;
+          margin: 0 0 10px 0;
+          background: linear-gradient(90deg, #38bdf8, #818cf8);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .stats {
+          font-size: 2rem;
+          font-weight: 700;
+          margin-bottom: 5px;
+          color: #f8fafc;
+        }
+        .cps {
+          font-size: 1.2rem;
+          color: #94a3b8;
+          margin-bottom: 35px;
+        }
+        .click-btn {
+          width: 240px;
+          height: 240px;
+          border-radius: 50%;
+          background: linear-gradient(145deg, #0ea5e9, #2563eb);
+          border: none;
+          color: white;
+          font-size: 2rem;
+          font-weight: 800;
+          cursor: pointer;
+          box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
+          transition: transform 0.05s ease, box-shadow 0.05s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 40px;
+        }
+        .click-btn:hover {
+          box-shadow: 0 15px 40px rgba(14, 165, 233, 0.6);
+          transform: scale(1.02);
+        }
+        .click-btn:active {
+          transform: scale(0.95);
+        }
+        .upgrades-container {
+          display: flex;
+          gap: 20px;
+          width: 100%;
+          justify-content: center;
+        }
+        .upgrade-card {
+          background: rgba(15, 23, 42, 0.8);
+          border: 1px solid #334155;
+          padding: 20px;
+          border-radius: 14px;
+          width: 48%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+        }
+        .upgrade-title {
+          font-weight: bold;
+          font-size: 1.1rem;
+          color: #cbd5e1;
+        }
+        .upgrade-btn {
+          padding: 10px 20px;
+          background-color: #38bdf8;
+          color: #0f172a;
+          border: none;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background-color 0.2s, transform 0.1s;
+          font-size: 1rem;
+        }
+        .upgrade-btn:hover {
+          background-color: #7dd3fc;
+          transform: scale(1.03);
+        }
+        .upgrade-btn:disabled {
+          background-color: #475569;
+          color: #94a3b8;
+          cursor: not-allowed;
+          transform: none;
+        }
+      </style>
+
+      <div class="game-wrapper">
+        <h1>Cyber Clicker</h1>
+        <div class="stats" id="scoreDisplay">Score: 0</div>
+        <div class="cps" id="cpsDisplay">Auto-Clicks: 0 / sec</div>
+        
+        <button class="click-btn" onclick="clicked()">CLICK ME</button>
+
+        <div class="upgrades-container">
+          <div class="upgrade-card">
+            <span class="upgrade-title">Power Click (+1)</span>
+            <button class="upgrade-btn" id="powerBtn" onclick="buyPower()">Cost: <span id="powerCost">15</span></button>
+          </div>
+          <div class="upgrade-card">
+            <span class="upgrade-title">Auto-Clicker (+1/s)</span>
+            <button class="upgrade-btn" id="autoBtn" onclick="buyAuto()">Cost: <span id="autoCost">50</span></button>
+          </div>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        <![CDATA[
+        let score = 0;
+        let clickPower = 1;
+        let powerCost = 15;
+        
+        let autoClickers = 0;
+        let autoCost = 50;
+
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const cpsDisplay = document.getElementById('cpsDisplay');
+        const powerCostDisplay = document.getElementById('powerCost');
+        const autoCostDisplay = document.getElementById('autoCost');
+        const powerBtn = document.getElementById('powerBtn');
+        const autoBtn = document.getElementById('autoBtn');
+
+        function clicked() {
+          score += clickPower;
+          updateUI();
+        }
+
+        function buyPower() {
+          if (score >= powerCost) {
+            score -= powerCost;
+            clickPower += 1;
+            powerCost = Math.floor(powerCost * 1.5);
+            updateUI();
+          }
+        }
+
+        function buyAuto() {
+          if (score >= autoCost) {
+            score -= autoCost;
+            autoClickers += 1;
+            autoCost = Math.floor(autoCost * 1.6);
+            updateUI();
+          }
+        }
+
+        function updateUI() {
+          scoreDisplay.textContent = "Score: " + score;
+          cpsDisplay.textContent = "Auto-Clicks: " + autoClickers + " / sec";
+          powerCostDisplay.textContent = powerCost;
+          autoCostDisplay.textContent = autoCost;
+
+          powerBtn.disabled = score < powerCost;
+          autoBtn.disabled = score < autoCost;
+        }
+
+        setInterval(function() {
+          if (autoClickers > 0) {
+            score += autoClickers;
+            updateUI();
+          }
+        }, 1000);
+
+        updateUI();
+        ]]>
+      </script>
+    </div>
+  </foreignObject>
+</svg>
